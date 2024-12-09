@@ -255,7 +255,7 @@ void searchContact(const char *filePath)
     // Search the file for the contact
     while (fscanf(file, "%s %s", contact.name, contact.number) == 2)
     {
-        if (strcmp(contact.number, searchNum) == 0)
+        if (strcmp(contact.number, searchNum) == 0) //Comparing strings
         {
             printf("Contact Found: Name: %s, Number: %s\n", contact.name, contact.number);
             found = 1; // Set the flag if found
@@ -271,153 +271,153 @@ void searchContact(const char *filePath)
 }
 
 // Updates details of an existing contact in the file
-void updateContact(const char *filePath)
+void updateContact(const char *filePath)  // Function to update a contact in a file
 {
-    FILE *file = fopen(filePath, "r");
-    FILE *tempFile = fopen("temp.txt", "w");
-    Contact contact;
-    char targetNum[15];
-    int updated = 0;
+    FILE *file = fopen(filePath, "r");  // Open the file in read mode
+    FILE *tempFile = fopen("temp.txt", "w");  // Create a temporary file to write updated data
+    Contact contact;  // Declare a Contact structure to store contact information
+    char targetNum[15];  // Array to store the target phone number
+    int updated = 0;  // Flag to check if the contact was updated
 
-    if (!file || !tempFile)
+    if (!file || !tempFile)  // Check if either of the files couldn't be opened
     {
-        perror("Error opening file");
-        if (file)
+        perror("Error opening file");  // Print error message if file cannot be opened
+        if (file)  // If the input file is open, close it
             fclose(file);
-        if (tempFile)
+        if (tempFile)  // If the temp file is open, close it
             fclose(tempFile);
-        return;
+        return;  // Exit the function if files couldn't be opened
     }
 
-    getPhoneNumber("", "of the contact to update", targetNum);
+    getPhoneNumber("", "of the contact to update", targetNum);  // Get the phone number of the contact to update
 
-    while (fscanf(file, "%s %s", contact.name, contact.number) == 2)
+    while (fscanf(file, "%s %s", contact.name, contact.number) == 2)  // Read contact details from the file
     {
-        if (strcmp(contact.number, targetNum) == 0)
+        if (strcmp(contact.number, targetNum) == 0)  // If the current contact's number matches the target number
         {
-            printf("Enter new name: ");
-            scanf("%s", contact.name);
-            getPhoneNumber("new ", "", contact.number);
-            updated = 1;
+            printf("Enter new name: ");  // Prompt user to enter a new name for the contact
+            scanf("%s", contact.name);  // Read the new name from the user
+            getPhoneNumber("new ", "", contact.number);  // Get the new phone number for the contact
+            updated = 1;  // Mark that an update has been made
         }
-        fprintf(tempFile, "%s %s\n", contact.name, contact.number);
+        fprintf(tempFile, "%s %s\n", contact.name, contact.number);  // Write the contact's updated (or unchanged) details to the temp file
     }
 
-    fclose(file);
-    fclose(tempFile);
+    fclose(file);  // Close the original contact file
+    fclose(tempFile);  // Close the temporary file
 
-    if (updated)
+    if (updated)  // If the contact was updated
     {
-        remove(filePath);
-        rename("temp.txt", filePath);
-        printf("\nContact updated successfully.\n");
+        remove(filePath);  // Delete the original file
+        rename("temp.txt", filePath);  // Rename the temp file to the original file name
+        printf("\nContact updated successfully.\n");  // Inform the user that the contact was updated
     }
-    else
+    else  // If no contact was updated
     {
-        remove("temp.txt");
-        printf("\nError: No matching contact found.\n");
+        remove("temp.txt");  // Remove the temporary file
+        printf("\nError: No matching contact found.\n");  // Inform the user that no matching contact was found
     }
 }
 
 // Removes a contact from the specified file
-void removeContact(const char *filePath)
+void removeContact(const char *filePath)  // Function to remove a contact from a file
 {
-    FILE *file = fopen(filePath, "r");
-    FILE *tempFile = fopen("temp.txt", "w");
-    Contact contact;
-    char targetNum[15];
-    int removed = 0;
+    FILE *file = fopen(filePath, "r");  // Open the file in read mode
+    FILE *tempFile = fopen("temp.txt", "w");  // Create a temporary file to write data excluding the removed contact
+    Contact contact;  // Declare a Contact structure to store contact information
+    char targetNum[15];  // Array to store the target phone number
+    int removed = 0;  // Flag to check if the contact was removed
 
-    if (!file || !tempFile)
+    if (!file || !tempFile)  // Check if either of the files couldn't be opened
     {
-        perror("Error opening file");
-        if (file)
+        perror("Error opening file");  // Print error message if file cannot be opened
+        if (file)  // If the input file is open, close it
             fclose(file);
-        if (tempFile)
+        if (tempFile)  // If the temp file is open, close it
             fclose(tempFile);
-        return;
+        return;  // Exit the function if files couldn't be opened
     }
 
-    getPhoneNumber("", " of the contact to delete", targetNum);
+    getPhoneNumber("", " of the contact to delete", targetNum);  // Get the phone number of the contact to delete
 
-    while (fscanf(file, "%s %s", contact.name, contact.number) == 2)
+    while (fscanf(file, "%s %s", contact.name, contact.number) == 2)  // Read contact details from the file
     {
-        if (strcmp(contact.number, targetNum) != 0)
+        if (strcmp(contact.number, targetNum) != 0)  // If the current contact's number does not match the target number
         {
-            fprintf(tempFile, "%s %s\n", contact.name, contact.number);
+            fprintf(tempFile, "%s %s\n", contact.name, contact.number);  // Write the contact's details to the temp file
         }
-        else
+        else  // If the contact is the one to be removed
         {
-            removed = 1;
+            removed = 1;  // Mark that a contact was removed
         }
     }
 
-    fclose(file);
-    fclose(tempFile);
+    fclose(file);  // Close the original contact file
+    fclose(tempFile);  // Close the temporary file
 
-    if (removed)
+    if (removed)  // If a contact was removed
     {
-        remove(filePath);
-        rename("temp.txt", filePath);
-        printf("\nContact deleted successfully.\n");
+        remove(filePath);  // Delete the original file
+        rename("temp.txt", filePath);  // Rename the temp file to the original file name
+        printf("\nContact deleted successfully.\n");  // Inform the user that the contact was deleted
     }
-    else
+    else  // If no contact was removed
     {
-        remove("temp.txt");
-        printf("\nError: No matching contact found.\n");
+        remove("temp.txt");  // Remove the temporary file
+        printf("\nError: No matching contact found.\n");  // Inform the user that no matching contact was found
     }
 }
 
 // Moves a contact from one provider's file to another
-void moveContact(const char *sourceFile, const char *targetFile)
+void moveContact(const char *sourceFile, const char *targetFile)  // Function to move a contact from one file to another
 {
-    FILE *file = fopen(sourceFile, "r");
-    FILE *tempFile = fopen("temp.txt", "w");
-    FILE *target = fopen(targetFile, "a");
-    Contact contact;
-    char targetNum[15];
-    int moved = 0;
+    FILE *file = fopen(sourceFile, "r");  // Open the source file in read mode
+    FILE *tempFile = fopen("temp.txt", "w");  // Create a temporary file to write data excluding the moved contact
+    FILE *target = fopen(targetFile, "a");  // Open the target file in append mode (add to the end of the file)
+    Contact contact;  // Declare a Contact structure to store contact information
+    char targetNum[15];  // Array to store the target phone number
+    int moved = 0;  // Flag to check if the contact was moved
 
-    if (!file || !tempFile || !target)
+    if (!file || !tempFile || !target)  // Check if any of the files couldn't be opened
     {
-        perror("Error opening file");
-        if (file)
+        perror("Error opening file");  // Print error message if file cannot be opened
+        if (file)  // If the source file is open, close it
             fclose(file);
-        if (tempFile)
+        if (tempFile)  // If the temp file is open, close it
             fclose(tempFile);
-        if (target)
+        if (target)  // If the target file is open, close it
             fclose(target);
-        return;
+        return;  // Exit the function if files couldn't be opened
     }
 
-    getPhoneNumber("", " of the contact to transfer", targetNum);
+    getPhoneNumber("", " of the contact to transfer", targetNum);  // Get the phone number of the contact to move
 
-    while (fscanf(file, "%s %s", contact.name, contact.number) == 2)
+    while (fscanf(file, "%s %s", contact.name, contact.number) == 2)  // Read contact details from the source file
     {
-        if (strcmp(contact.number, targetNum) == 0)
+        if (strcmp(contact.number, targetNum) == 0)  // If the current contact's number matches the target number
         {
-            fprintf(target, "%s %s\n", contact.name, contact.number);
-            moved = 1;
+            fprintf(target, "%s %s\n", contact.name, contact.number);  // Write the contact's details to the target file
+            moved = 1;  // Mark that the contact was moved
         }
-        else
+        else  // If the contact is not the one to be moved
         {
-            fprintf(tempFile, "%s %s\n", contact.name, contact.number);
+            fprintf(tempFile, "%s %s\n", contact.name, contact.number);  // Write the contact's details to the temp file
         }
     }
 
-    fclose(file);
-    fclose(tempFile);
-    fclose(target);
+    fclose(file);  // Close the source file
+    fclose(tempFile);  // Close the temporary file
+    fclose(target);  // Close the target file
 
-    if (moved)
+    if (moved)  // If a contact was moved
     {
-        remove(sourceFile);
-        rename("temp.txt", sourceFile);
-        printf("\nContact transferred successfully.\n");
+        remove(sourceFile);  // Delete the original source file
+        rename("temp.txt", sourceFile);  // Rename the temp file to the source file name
+        printf("\nContact transferred successfully.\n");  // Inform the user that the contact was transferred
     }
-    else
+    else  // If no contact was moved
     {
-        remove("temp.txt");
-        printf("\nError: No matching contact found.\n");
+        remove("temp.txt");  // Remove the temporary file
+        printf("\nError: No matching contact found.\n");  // Inform the user that no matching contact was found
     }
 }
